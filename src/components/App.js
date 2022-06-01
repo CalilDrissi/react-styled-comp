@@ -1,39 +1,41 @@
-import styled, { createGlobalStyle } from "styled-components";
-import { BrowserRouter, Routes , Route } from "react-router-dom";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-
-
+import LightTheme from "themes/light";
+import DarkTheme from "themes/dark";
 
 const GlobalStyle = createGlobalStyle`
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border: 2px solid red;
+  body{
+    background: ${p => p.theme.bodyBackgroundColor};
+		min-height: 100vh;
+		margin: 0;
+		color: ${p => p.theme.bodyFontColor};
+		font-family: 'Kaushan Script'
   }
-  body {
-   font-family: 'Roboto', sans-serif ;
-  }
-`
-
-const Container = styled.div`
-    width: 70%;
-    min-height: 100vh;
-    margin: 0 auto;
-`
+`;
 
 function App() {
+  const [theme, setTheme] = useState(LightTheme);
+
   return (
-    <>
-    <GlobalStyle />
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" path="/" element={<Home />} />
-        <Route path="/Login" element={<Login />}/>
-      </Routes>
-    </BrowserRouter>
-    </>
+    <ThemeProvider
+      theme={{
+        ...theme,
+        setTheme: () => {
+          setTheme((s) => (s.id === "light" ? DarkTheme : LightTheme));
+        },
+      }}
+    >
+      <GlobalStyle />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
